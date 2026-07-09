@@ -45,8 +45,7 @@ class TaskManager:
         subprocess.call('cls', shell=True)
 
     def show_task_options(self, task):
-        repeat_menu = True
-        while repeat_menu:
+        while True:
             print(f"===== Task {task.task_id} options =====")
             print(f"1. {"Unmark" if task.completed else "Mark"} as complete")
             print(f"2. Delete task")
@@ -71,12 +70,11 @@ class TaskManager:
                     self.clear_console()
                     continue
             
-            repeat_menu = False
+            break
             
 
     def show_menu(self):
-        repeat_menu = True
-        while repeat_menu:
+        while True:
             self.clear_console()
             last_task_id = self.get_next_task_id()
             print(f"===== Task CLI =====")
@@ -99,7 +97,7 @@ class TaskManager:
             # IF option is valid
             # Exit
             if opt == 0:
-                repeat_menu = False
+                break
             
             # Add new task
             elif opt == last_task_id:
