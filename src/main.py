@@ -3,6 +3,7 @@ main.py is the core file of the Tasks CLI
 It defines the TaskManager class and the Task class
 """
 
+import os
 import subprocess
 
 class Task:
@@ -42,7 +43,7 @@ class TaskManager:
         return self.task_list[-1].task_id+1 if self.task_list else 1
 
     def clear_console(self):
-        subprocess.call('cls', shell=True)
+        subprocess.call("cls" if os.name == "nt" else "clear", shell=True)
 
     def show_task_options(self, task):
         while True:
