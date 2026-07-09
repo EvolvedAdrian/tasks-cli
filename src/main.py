@@ -22,8 +22,21 @@ class TaskManager:
             task_status = "[X]" if i.completed else "[]"
             print(f"--- TASK {i.task_id}. {i.name} {task_status}")
 
+    def find(self, task_id):
+        for i in self.task_list:
+            actual_task = i
+            if actual_task.task_id == task_id: return actual_task
+        return None
+
+    def complete(self, task_id):
+        task = self.find(task_id)
+        if task: task.completed = True
+
+    def delete(self, task_id):
+        task = self.find(task_id)
+        if task: self.task_list.remove(task)
+
 task_manager = TaskManager()
 
 task_manager.create("Comprar leche")
 
-task_manager.see_all()
