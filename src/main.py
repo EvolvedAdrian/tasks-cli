@@ -44,18 +44,48 @@ class TaskManager:
     def clear_console(self):
         subprocess.call('cls', shell=True)
 
+    def show_task_options(self, task):
+        repeat_menu = True
+        while repeat_menu:
+            print(f"===== Task {task.task_id} options =====")
+            print(f"1. {"Unmark" if task.completed else "Mark"} as complete")
+            print(f"2. Delete task")
+            print("0. Exit")
+
+            try:
+                opt = int(input('\nSelect ---> '))
+            except ValueError:
+                continue
+            
+            match opt:
+                case 0:
+                    pass
+                
+                case 1:
+                    self.complete(task.task_id)
+                
+                case 2:
+                    self.delete(task.task_id)
+                
+                case _:
+                    self.clear_console()
+                    continue
+            
+            repeat_menu = False
+            
+
     def show_menu(self):
-        show_menu = True
-        while show_menu:
+        repeat_menu = True
+        while repeat_menu:
             self.clear_console()
             last_task_id = self.get_next_task_id()
             print(f"===== Task CLI =====")
             self.show_tasks()
             print("\n---")
             print(f"{last_task_id}. Create a new task")
-            print(f"0. Exit")
+            print("0. Exit")
 
-            # Check value error
+            # Check if selected value option is correct
             try:
                 opt = int(input('\nSelect ---> '))
             except ValueError:
@@ -65,12 +95,23 @@ class TaskManager:
             if opt < 0 or opt > last_task_id:
                 continue
             self.clear_console()
+            
+            # IF option is valid
+            # Exit
             if opt == 0:
-                exit()
+                repeat_menu = False
+            
+            # Add new task
             elif opt == last_task_id:
                 new_task = input("New task: ")
                 if new_task:
                     self.create(new_task)
+            
+            # Access task options
+            else:
+                self.show_task_options(self.find(opt))
+
+    
 
 task_manager = TaskManager()
 
