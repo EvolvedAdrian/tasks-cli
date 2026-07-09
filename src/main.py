@@ -30,9 +30,9 @@ class TaskManager:
             if actual_task.task_id == task_id: return actual_task
         return None
 
-    def complete(self, task_id):
+    def toggle_completed(self, task_id):
         task = self.find(task_id)
-        if task: task.completed = True
+        if task: task.completed = False if task.completed else True
 
     def delete(self, task_id):
         task = self.find(task_id)
@@ -62,7 +62,7 @@ class TaskManager:
                     pass
                 
                 case 1:
-                    self.complete(task.task_id)
+                    self.toggle_completed(task.task_id)
                 
                 case 2:
                     self.delete(task.task_id)
