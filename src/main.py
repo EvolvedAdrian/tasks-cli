@@ -45,19 +45,20 @@ class TaskManager:
     def clear_console(self):
         subprocess.call("cls" if os.name == "nt" else "clear", shell=True)
 
+    def check_option(self):
+        try:
+            return int(input('\nSelect ---> '))
+        except ValueError:
+            return None
+
     def show_task_options(self, task):
         while True:
             print(f"===== Task {task.task_id} options =====")
             print(f"1. {"Unmark" if task.completed else "Mark"} as complete")
             print(f"2. Delete task")
             print("0. Exit")
-
-            try:
-                opt = int(input('\nSelect ---> '))
-            except ValueError:
-                continue
             
-            match opt:
+            match self.check_option():
                 case 0:
                     pass
                 
@@ -83,16 +84,11 @@ class TaskManager:
             print("\n---")
             print(f"{last_task_id}. Create a new task")
             print("0. Exit")
+            
+            opt = self.check_option()
 
-            # Check if selected value option is correct
-            try:
-                opt = int(input('\nSelect ---> '))
-            except ValueError:
-                continue
-
-            # Check if selected option is valid
-            if opt < 0 or opt > last_task_id:
-                continue
+            if opt == None: continue
+            if opt < 0 or opt > last_task_id: continue
             self.clear_console()
             
             # IF option is valid
