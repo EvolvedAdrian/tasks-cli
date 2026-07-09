@@ -17,7 +17,7 @@ class TaskManager:
         task_id = self.task_list[-1].task_id+1 if self.task_list else 1
         self.task_list.append(Task(task_id,name))
 
-    def see_all(self):
+    def show_tasks(self):
         for i in self.task_list:
             task_status = "[X]" if i.completed else "[]"
             print(f"--- TASK {i.task_id}. {i.name} {task_status}")
