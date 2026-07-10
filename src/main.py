@@ -15,9 +15,9 @@ class Task:
 class TaskManager:
     def __init__(self):
         self.task_list = []
-        self.show_menu()
+        self.show_main_menu()
 
-    def create(self,name):
+    def create_task(self,name):
         self.task_list.append(Task(self.get_next_task_id(),name))
 
     def show_tasks(self):
@@ -25,18 +25,17 @@ class TaskManager:
             task_status = "[X]" if i.completed else "[]"
             print(f"{i.task_id}. {i.name} {task_status}")
 
-    def find(self, task_id):
-        for i in self.task_list:
-            actual_task = i
-            if actual_task.task_id == task_id: return actual_task
+    def find_task(self, task_id):
+        for task in self.task_list:
+            if task.task_id == task_id: return task
         return None
 
     def toggle_completed(self, task_id):
-        task = self.find(task_id)
-        if task: task.completed = False if task.completed else True
+        task = self.find_task(task_id)
+        if task: task.completed = not task.completed
 
-    def delete(self, task_id):
-        task = self.find(task_id)
+    def delete_task(self, task_id):
+        task = self.find_task(task_id)
         if task: self.task_list.remove(task)
 
     def get_next_task_id(self):
@@ -55,7 +54,7 @@ class TaskManager:
         while True:
             print(f"===== Task {task.task_id} options =====")
             print(f"1. {"Unmark" if task.completed else "Mark"} as complete")
-            print(f"2. Delete task")
+            print(f"2. delete_task task")
             print("0. Exit")
             
             match self.check_option():
@@ -66,7 +65,7 @@ class TaskManager:
                     self.toggle_completed(task.task_id)
                 
                 case 2:
-                    self.delete(task.task_id)
+                    self.delete_task(task.task_id)
                 
                 case _:
                     self.clear_console()
@@ -75,19 +74,19 @@ class TaskManager:
             break
             
 
-    def show_menu(self):
+    def show_main_menu(self):
         while True:
             self.clear_console()
             last_task_id = self.get_next_task_id()
             print(f"===== Task CLI =====")
             self.show_tasks()
             print("\n---")
-            print(f"{last_task_id}. Create a new task")
+            print(f"{last_task_id}. create_task a new task")
             print("0. Exit")
             
             opt = self.check_option()
 
-            if opt == None: continue
+            if opt is None: continue
             if opt < 0 or opt > last_task_id: continue
             self.clear_console()
             
@@ -100,11 +99,11 @@ class TaskManager:
             elif opt == last_task_id:
                 new_task = input("New task: ")
                 if new_task:
-                    self.create(new_task)
+                    self.create_task(new_task)
             
             # Access task options
             else:
-                self.show_task_options(self.find(opt))
+                self.show_task_options(self.find_task(opt))
 
     
 
