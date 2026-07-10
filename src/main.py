@@ -5,25 +5,26 @@ It defines the TaskManager class and the Task class
 
 import os
 import subprocess
+import json
 
 class Task:
-    def __init__(self, task_id, name):
+    def __init__(self, task_id, name, completed=False):
         self.task_id = task_id
         self.name = name
-        self.completed = False
+        self.completed = completed
 
 class TaskManager:
     def __init__(self):
-        self.task_list = []
-        self.show_main_menu()
+        self.task_list = self.load_tasks()
 
     def create_task(self,name):
         self.task_list.append(Task(self.get_next_task_id(),name))
+        self.save_tasks()
 
     def show_tasks(self):
-        for i in self.task_list:
-            task_status = "[X]" if i.completed else "[]"
-            print(f"{i.task_id}. {i.name} {task_status}")
+        for task in self.task_list:
+            task_status = "[X]" if task.completed else "[]"
+            print(f"{task.task_id}. {task.name} {task_status}")
 
     def find_task(self, task_id):
         for task in self.task_list:
@@ -32,11 +33,15 @@ class TaskManager:
 
     def toggle_completed(self, task_id):
         task = self.find_task(task_id)
-        if task: task.completed = not task.completed
+        if task: 
+            task.completed = not task.completed
+            self.save_tasks()
 
     def delete_task(self, task_id):
         task = self.find_task(task_id)
-        if task: self.task_list.remove(task)
+        if task: 
+            self.task_list.remove(task)
+            self.save_tasks()
 
     def get_next_task_id(self):
         return self.task_list[-1].task_id+1 if self.task_list else 1
@@ -105,8 +110,34 @@ class TaskManager:
             else:
                 self.show_task_options(self.find_task(opt))
 
+    def json_to_task_list(self, tasks_file):
+        try:
+            task_list = []
+            for json_task in json.load(tasks_file):
+                task = Task(json_task["task_id"], json_task["name"], json_task["completed"])
+                task_list.append(task)
+            return task_list
+        except json.decoder.JSONDecodeError:
+            return []
     
+    def task_list_to_json(self, task_list):
+            json_task_list = []
+            for task in task_list:
+                json_task = task.__dict__
+                json_task_list.append(json_task)
+            return json_task_list
+
+    def load_tasks(self):
+        try: 
+            with open("../data/data.json", "r") as tasks_file:
+                return self.json_to_task_list(tasks_file)
+        except FileNotFoundError:
+            return []
+        
+    def save_tasks(self):
+        with open("../data/data.json", "w") as tasks_file:
+            json.dump(self.task_list_to_json(self.task_list), tasks_file)
 
 task_manager = TaskManager()
-
+task_manager.show_main_menu()
 
