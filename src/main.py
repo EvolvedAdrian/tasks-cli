@@ -14,8 +14,9 @@ class Task:
         self.completed = completed
 
 class TaskManager:
-    def __init__(self):
+    def __init__(self, tasks_file):
         self.task_list = self.load_tasks()
+        self.tasks_file = tasks_file
 
     def create_task(self,name):
         self.task_list.append(Task(self.get_next_task_id(),name))
@@ -129,15 +130,15 @@ class TaskManager:
 
     def load_tasks(self):
         try: 
-            with open("../data/data.json", "r") as tasks_file:
+            with open(self.tasks_file, "r") as tasks_file:
                 return self.json_to_task_list(tasks_file)
         except FileNotFoundError:
             return []
         
     def save_tasks(self):
-        with open("../data/data.json", "w") as tasks_file:
+        with open(self.tasks_file, "w") as tasks_file:
             json.dump(self.task_list_to_json(self.task_list), tasks_file)
 
-task_manager = TaskManager()
+task_manager = TaskManager("../data/data.json")
 task_manager.show_main_menu()
 
